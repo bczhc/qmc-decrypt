@@ -1,5 +1,5 @@
 [package]
-name = "qmc-decode"
+name = "qmc-decrypt"
 version = "1.0.0"
 edition = "2021"
 
@@ -7,3 +7,5 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+qmc2-crypto = { path = "third_party/qmc2-rust/qmc2-crypto" }
+clap = "4.0.10"
