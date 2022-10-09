@@ -1,0 +1,3 @@
+[submodule "third_party/qmc2-rust"]
+	path = third_party/qmc2-rust
+	url = https://github.com/jixunmoe/qmc2-rust
