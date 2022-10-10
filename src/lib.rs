@@ -5,6 +5,7 @@ use std::io::{Read, Seek, SeekFrom};
 use std::path::Path;
 use std::str::FromStr;
 
+pub mod qmc2;
 pub mod qmcflac;
 
 #[derive(Debug, PartialEq, Eq, Copy, Clone)]

@@ -1,13 +1,13 @@
 use std::ffi::OsString;
 use std::fs::File;
 use std::io;
-use std::io::{stdout, Read, Write};
+use std::io::{stdout, Write};
 use std::path::{Path, PathBuf};
 use std::str::FromStr;
 
 use clap::{Arg, Command};
 
-use qmc_decrypt::{qmcflac, AnyResult, Format};
+use qmc_decrypt::{qmc2, qmcflac, AnyResult, CryptoError, Format};
 use qmc_decrypt::{read_qmc_tag, TagName};
 
 fn main() -> AnyResult<()> {
@@ -74,22 +74,10 @@ fn decrypt_mflac0<P: AsRef<Path>>(input: P, output: P, ekey: &str) -> AnyResult<
         _ => {}
     }
 
-    let qmc_crypto = qmc2_crypto::decrypt_factory(ekey).map_err(qmc_decrypt::CryptoError::from)?;
-
-    let mut input = File::open(input)?;
+    let input = File::open(input)?;
     let mut output = open_output_file(output)?;
-    let mut buf = [0_u8; 4096];
-    let mut offset = 0_u64;
-    loop {
-        let size = input.read(&mut buf)?;
-        if size == 0 {
-            break;
-        }
-
-        qmc_crypto.decrypt(offset as usize, &mut buf[..size]);
-        output.write_all(&buf[..size])?;
-        offset += size as u64;
-    }
+    let mut stream = qmc2::read::Stream::new(input, ekey).map_err(CryptoError::from)?;
+    io::copy(&mut stream, &mut output)?;
     Ok(())
 }
 
