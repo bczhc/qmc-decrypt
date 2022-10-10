@@ -86,8 +86,8 @@ fn decrypt_mflac0<P: AsRef<Path>>(input: P, output: P, ekey: &str) -> AnyResult<
             break;
         }
 
-        qmc_crypto.decrypt(offset as usize, &mut buf);
-        output.write_all(&buf)?;
+        qmc_crypto.decrypt(offset as usize, &mut buf[..size]);
+        output.write_all(&buf[..size])?;
         offset += size as u64;
     }
     Ok(())
