@@ -58,10 +58,10 @@ fn main() -> AnyResult<()> {
 }
 
 fn decrypt_qmcflac<P: AsRef<Path>>(input: P, output: P) -> AnyResult<()> {
-    let output = open_output_file(output)?;
-    let mut stream = qmcflac::Stream::new(output);
-    let mut input = File::open(input)?;
-    io::copy(&mut input, &mut stream)?;
+    let input = File::open(input)?;
+    let mut output = open_output_file(output)?;
+    let mut stream = qmcflac::read::Stream::new(input);
+    io::copy(&mut stream, &mut output)?;
     Ok(())
 }
 

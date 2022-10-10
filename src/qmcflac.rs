@@ -1,28 +1,24 @@
-use std::io::{BufWriter, Write};
-
-pub struct Stream<W>
-where
-    W: Write,
-{
+pub struct Cipher {
     x: i64,
     y: i64,
     i: i64,
     dx: i64,
-    writer: BufWriter<W>,
 }
 
-impl<W> Stream<W>
-where
-    W: Write,
-{
-    pub fn new(writer: W) -> Self {
+impl Default for Cipher {
+    fn default() -> Self {
         Self {
             x: -1,
             y: 8,
             dx: 1,
             i: -1,
-            writer: BufWriter::new(writer),
         }
+    }
+}
+
+impl Cipher {
+    pub fn new() -> Self {
+        Self::default()
     }
 
     const SEED_MAP: [[u8; 7]; 8] = [
@@ -37,10 +33,8 @@ where
     ];
 }
 
-impl<W> Stream<W>
-where
-    W: Write,
-{
+impl Cipher {
+    #[inline]
     fn next_mask(&mut self) -> u8 {
         let mut ret: u8;
         loop {
@@ -63,21 +57,48 @@ where
         }
         ret
     }
+
+    pub fn process(&mut self, buf: &mut [u8]) {
+        for b in buf {
+            *b ^= self.next_mask();
+        }
+    }
 }
 
-impl<W> Write for Stream<W>
-where
-    W: Write,
-{
-    fn write(&mut self, buf: &[u8]) -> std::io::Result<usize> {
-        for b in buf {
-            let mask = self.next_mask();
-            self.writer.write_all(&[*b ^ mask])?;
-        }
-        Ok(buf.len())
+pub mod read {
+    use std::io::Read;
+
+    use super::Cipher;
+
+    /// Read-based stream
+    pub struct Stream<R>
+    where
+        R: Read,
+    {
+        cipher: Cipher,
+        reader: R,
     }
 
-    fn flush(&mut self) -> std::io::Result<()> {
-        self.writer.flush()
+    impl<R> Stream<R>
+    where
+        R: Read,
+    {
+        pub fn new(reader: R) -> Self {
+            Self {
+                cipher: Cipher::new(),
+                reader,
+            }
+        }
+    }
+
+    impl<R> Read for Stream<R>
+    where
+        R: Read,
+    {
+        fn read(&mut self, buf: &mut [u8]) -> std::io::Result<usize> {
+            let size = self.reader.read(buf)?;
+            self.cipher.process(buf);
+            Ok(size)
+        }
     }
 }
