@@ -1,68 +1,26 @@
-pub struct Cipher {
-    x: i64,
-    y: i64,
-    i: i64,
-    dx: i64,
-}
+pub struct Cipher;
 
-impl Default for Cipher {
-    fn default() -> Self {
-        Self {
-            x: -1,
-            y: 8,
-            dx: 1,
-            i: -1,
+impl Cipher {
+    pub fn process(offset: u64, buf: &mut [u8]) {
+        for (i, b) in buf.iter_mut().enumerate() {
+            let pos = offset + i as u64;
+            let mut index = (if pos > 0x7fff { pos % 0x7fff } else { pos }) & 0x7f;
+            if index > 0x3f {
+                index = (0x80 - index) & 0x3f;
+            }
+            *b ^= Self::KEYS[index as usize];
         }
     }
 }
 
 impl Cipher {
-    pub fn new() -> Self {
-        Self::default()
-    }
-
-    const SEED_MAP: [[u8; 7]; 8] = [
-        [0x4a, 0xd6, 0xca, 0x90, 0x67, 0xf7, 0x52],
-        [0x5e, 0x95, 0x23, 0x9f, 0x13, 0x11, 0x7e],
-        [0x47, 0x74, 0x3d, 0x90, 0xaa, 0x3f, 0x51],
-        [0xc6, 0x09, 0xd5, 0x9f, 0xfa, 0x66, 0xf9],
-        [0xf3, 0xd6, 0xa1, 0x90, 0xa0, 0xf7, 0xf0],
-        [0x1d, 0x95, 0xde, 0x9f, 0x84, 0x11, 0xf4],
-        [0x0e, 0x74, 0xbb, 0x90, 0xbc, 0x3f, 0x92],
-        [0x00, 0x09, 0x5b, 0x9f, 0x62, 0x66, 0xa1],
+    const KEYS: [u8; 64] = [
+        0xc3, 0x4a, 0xd6, 0xca, 0x90, 0x67, 0xf7, 0x52, 0xd8, 0xa1, 0x66, 0x62, 0x9f, 0x5b, 0x09,
+        0x00, 0xc3, 0x5e, 0x95, 0x23, 0x9f, 0x13, 0x11, 0x7e, 0xd8, 0x92, 0x3f, 0xbc, 0x90, 0xbb,
+        0x74, 0x0e, 0xc3, 0x47, 0x74, 0x3d, 0x90, 0xaa, 0x3f, 0x51, 0xd8, 0xf4, 0x11, 0x84, 0x9f,
+        0xde, 0x95, 0x1d, 0xc3, 0xc6, 0x09, 0xd5, 0x9f, 0xfa, 0x66, 0xf9, 0xd8, 0xf0, 0xf7, 0xa0,
+        0x90, 0xa1, 0xd6, 0xf3,
     ];
-}
-
-impl Cipher {
-    #[inline]
-    fn next_mask(&mut self) -> u8 {
-        let mut ret: u8;
-        loop {
-            self.i += 1;
-            if self.x < 0 {
-                self.dx = 1;
-                self.y = (8 - self.y) % 8;
-                ret = 0xc3;
-            } else if self.x > 6 {
-                self.dx = -1;
-                self.y = 7 - self.y;
-                ret = 0xd8;
-            } else {
-                ret = Self::SEED_MAP[self.y as usize][self.x as usize];
-            }
-            self.x += self.dx;
-            if !(self.i == 0x8000 || (self.i > 0x8000 && ((self.i + 1) % 0x8000) == 0)) {
-                break;
-            }
-        }
-        ret
-    }
-
-    pub fn process(&mut self, buf: &mut [u8]) {
-        for b in buf {
-            *b ^= self.next_mask();
-        }
-    }
 }
 
 pub mod read {
@@ -75,8 +33,8 @@ pub mod read {
     where
         R: Read,
     {
-        cipher: Cipher,
         reader: R,
+        offset: u64,
     }
 
     impl<R> Stream<R>
@@ -84,10 +42,7 @@ pub mod read {
         R: Read,
     {
         pub fn new(reader: R) -> Self {
-            Self {
-                cipher: Cipher::new(),
-                reader,
-            }
+            Self { reader, offset: 0 }
         }
     }
 
@@ -97,7 +52,8 @@ pub mod read {
     {
         fn read(&mut self, buf: &mut [u8]) -> std::io::Result<usize> {
             let size = self.reader.read(buf)?;
-            self.cipher.process(buf);
+            Cipher::process(self.offset, buf);
+            self.offset += size as u64;
             Ok(size)
         }
     }

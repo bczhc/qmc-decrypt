@@ -7,7 +7,7 @@ pub mod read {
     {
         reader: R,
         crypto: Box<dyn qmc2_crypto::QMC2Crypto>,
-        offset: usize,
+        offset: u64,
     }
 
     impl<R> Stream<R>
@@ -30,7 +30,7 @@ pub mod read {
     {
         fn read(&mut self, buf: &mut [u8]) -> std::io::Result<usize> {
             let size = self.reader.read(buf)?;
-            self.crypto.decrypt(self.offset, &mut buf[..size]);
+            self.crypto.decrypt(self.offset as usize, &mut buf[..size]);
             Ok(size)
         }
     }

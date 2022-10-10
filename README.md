@@ -12,3 +12,6 @@ QMC-decrypt
 - https://github.com/bczhc/qmc-decode
 
 Thanks to the `qmc2-crypto` module from jixunmoe
+
+The qmcflac decrypting algorithm is picked randomly by me,
+namely from https://github.com/juhemusic/LRC/blob/master/worker/qmc-worker.ts
