@@ -1,9 +1,9 @@
 QMC-decrypt
 ---
 ## Supported formats
-- `qmcflac`
-- newer formats `mgg1` and `mflac0`
-from QQMusic, with manually `ekey` passed to use
+- `qmcflac` to `flac`
+- `qmc0` to `mp3`
+- `mgg1` and `mflac0` with manually `ekey` passed to be used, to `ogg` and `flac`
   
 ## See also/references
 - https://github.com/unlock-music/cli/issues/37

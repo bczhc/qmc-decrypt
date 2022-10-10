@@ -3,6 +3,7 @@ use std::fs::File;
 use std::io;
 use std::io::{Read, Seek, SeekFrom};
 use std::path::Path;
+use std::str::FromStr;
 
 pub mod qmcflac;
 
@@ -50,3 +51,46 @@ impl From<qmc2_crypto::errors::CryptoError> for CryptoError {
         Self(e)
     }
 }
+
+pub enum Format {
+    QmcFlac,
+    Qmc0,
+    MFlac0,
+    Mgg1,
+}
+
+impl Format {
+    pub fn extension(&self) -> &'static str {
+        match self {
+            Format::QmcFlac => "qmcflac",
+            Format::Qmc0 => "qmc0",
+            Format::MFlac0 => "mflac0",
+            Format::Mgg1 => "mgg1",
+        }
+    }
+
+    pub fn decrypted_extension(&self) -> &'static str {
+        match self {
+            Format::QmcFlac => "flac",
+            Format::Qmc0 => "mp3",
+            Format::MFlac0 => "flac",
+            Format::Mgg1 => "ogg",
+        }
+    }
+}
+
+impl FromStr for Format {
+    type Err = ();
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s.to_ascii_lowercase().as_str() {
+            "qmcflac" => Ok(Self::QmcFlac),
+            "qmc0" => Ok(Self::Qmc0),
+            "mflac0" => Ok(Self::MFlac0),
+            "mgg1" => Ok(Self::Mgg1),
+            _ => Err(()),
+        }
+    }
+}
+
+pub type AnyResult<T> = Result<T, Box<dyn std::error::Error>>;
