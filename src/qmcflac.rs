@@ -4,7 +4,7 @@ impl Cipher {
     pub fn process(offset: u64, buf: &mut [u8]) {
         for (i, b) in buf.iter_mut().enumerate() {
             let pos = offset + i as u64;
-            let mut index = (if pos > 0x7fff { pos % 0x7fff } else { pos }) & 0x7f;
+            let mut index = (pos % 0x7fff) & 0x7f;
             if index > 0x3f {
                 index = (0x80 - index) & 0x3f;
             }
