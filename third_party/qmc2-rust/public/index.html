@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-cmn">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="keywords" content="mgg, mgg0, mgg1, mflac, mflac0, mflac1" />
+    <meta name="description" content="解密 mgg 文件, 解密 mflac 文件" />
+    <title>QMC2-Rust-WASM</title>
+    <link rel="stylesheet" href="./app.css">
+  </head>
+  <body>
+    <div id="dragroot"></div>
+    <header>
+      <h1>QMC2-Rust-WASM <small>(实验性)</small></h1>
+    </header>
+
+    <main id="app" data-decoded="true" data-file-loaded="false">
+      <p>一个用于解密 <code>mflac</code>/<code>mgg</code> 文件的小工具</p>
+      <p>
+        <label>
+          <input type="file" id="input" />
+          <button type="button" id="btn_start">选择需要解密的文件</button>
+        </label>
+        <br />
+        <span id="dnd-hint">(如果浏览器支持，拖放进来也可以)</span>
+      </p>
+      <section id="progress">
+        <progress id="prog" max="100" value="0"></progress>
+        <p>正在处理文件，请稍后…</p>
+      </section>
+      <section id="preview-and-download">
+        <p><audio id="player" controls></audio></p>
+        <p>下载：<a href="#" id="download">等待解密…</a></p>
+      </section>
+      <hr />
+    </main>
+
+    <footer>
+      <p style="font-style: italic" lang="en">
+        Part of
+        <a target="_blank" href="https://github.com/jixunmoe/qmc2-rust/">QMC2-rust</a>
+        project. <br />
+        Licensed under the
+        <a
+          target="_blank"
+          href="https://github.com/jixunmoe/qmc2-rust/blob/main/LICENSE_MIT"
+        >
+          MIT
+        </a>
+        <a
+          target="_blank"
+          href="https://github.com/jixunmoe/qmc2-rust/blob/main/LICENSE_APACHE"
+        >
+          OR Apache-2.0 License
+        </a>
+        (<a target="_blank" href="./source.html">src</a>
+        | <a target="_blank" href="./docs/">doc</a>).
+      </p>
+    </footer>
+
+    <section id="backend-info">
+      QMC2-Crypto: 
+      <code id="qmc2-backend">加载中</code>
+    </section>
+    <script defer async src="./app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,9 @@
+# Binaries
+target/
+
+# IDE files
+.idea/
+.vscode/
+
+public/qmc2_crypto_embed.js
+docs/

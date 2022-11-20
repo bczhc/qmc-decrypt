@@ -1,0 +1,35 @@
+{
+  "name": "@jixun/qmc2-crypto-rust",
+  "version": "0.0.1",
+  "description": "qmc2-crypto in WebAssembly",
+  "types": "qmc2_crypto_embed.d.ts",
+  "main": "qmc2_crypto_embed.js",
+  "browser": "qmc2_crypto.js",
+  "scripts": {
+    "build:doc": "typedoc --out docs qmc2_crypto_embed.d.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jixunmoe/qmc2-rust.git"
+  },
+  "keywords": [
+    "qmc2"
+  ],
+  "author": "Jixun Wu <jixun.moe@gmail.com>",
+  "license": "(MIT OR Apache-2.0)",
+  "bugs": {
+    "url": "https://github.com/jixunmoe/qmc2-rust/issues"
+  },
+  "homepage": "https://github.com/jixunmoe/qmc2-rust#readme",
+  "files": [
+    "*.js",
+    "*.mjs",
+    "*.d.ts",
+    "*.wasm"
+  ],
+  "sideEffects": false,
+  "devDependencies": {
+    "typedoc": "^0.22.10",
+    "typescript": "^4.5.4"
+  }
+}
