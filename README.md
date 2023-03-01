@@ -5,6 +5,19 @@ QMC-decrypt
 - `qmc0` to `mp3`
 - `mgg1` and `mflac0` with manually `ekey` passed to be used, to `ogg` and `flac`
   
+## Usage
+```
+Usage: qmc-decrypt <input> <output> [ekey]
+
+Arguments:
+  <input>   
+  <output>  
+  [ekey]    
+
+Options:
+  -h, --help  Print help information
+```
+
 ## See also/references
 - https://github.com/unlock-music/cli/issues/37
 - https://github.com/jixunmoe/qmc2-rust
