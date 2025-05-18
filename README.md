@@ -29,3 +29,7 @@ Thanks to the `qmc2-crypto` module from [jixunmoe](https://github.com/jixunmoe).
 
 The qmcflac decryption algorithm is picked randomly by me,
 namely from https://github.com/juhemusic/LRC/blob/master/worker/qmc-worker.ts
+
+### 关于ekey获取
+<img width="1149" alt="image" src="https://github.com/user-attachments/assets/89be9970-5e6d-4236-b605-0172c135a2ce" />
+<img width="985" alt="image" src="https://github.com/user-attachments/assets/897a4d36-d3a1-469a-8dd0-59f4ddf5fb61" /> (https://gist.github.com/bczhc/ad58a291895f701839098e4b403a521a)
